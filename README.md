@@ -23,9 +23,8 @@ Repair works at the context layer only: no model is retrained.
 | Part | State |
 |---|---|
 | Library `src/context_half_life/` | implemented, unit-tested (`pytest`) |
-| E1 needle-in-a-haystack, E2 fact-ageing scripts | implemented (`experiments/e1_niah.py`, `e2_halflife.py`) |
-| E3 rot injection, E4 repair on LongMemEval, E5 ablations, `analyze.py` | added with the experiment runs |
-| `results/` | empty until the experiments are run; every number in the paper is traced to files here |
+| E1-E5 scripts and `analyze.py` | implemented and run once with `llama3.2:3b` (reader) and `qwen2.5:3b` (judge); see `results/` |
+| `results/` | raw per-call JSONL, summary CSVs and `paper_numbers.json`; every number in the paper is traced to files here |
 
 ## Layout
 
@@ -73,10 +72,10 @@ resumed. Seeds are fixed (`context_half_life.SEED`); decoding uses temperature 0
 |---|---|
 | E1 heat maps (literal vs paraphrased needle) | `python experiments/e1_niah.py --model llama3.2:3b` |
 | E2 half-lives, Kaplan-Meier curves | `python experiments/e2_halflife.py --model llama3.2:3b --mode ageing` (and `--mode matched`) |
-| E3 detectors, onset recovery | `python experiments/e3_injection.py` (added with the runs) |
-| E4 repair comparison | `python experiments/e4_repair.py` (added with the runs) |
-| E5 ablations | `python experiments/e5_ablation.py` (added with the runs) |
-| Summary tables and `paper_numbers.json` | `python experiments/analyze.py` (added with the runs) |
+| E3 detectors, onset recovery (synthetic sessions) | `python experiments/e3_injection.py` |
+| E4 repair comparison and E5 ablations (LongMemEval subset) | `python experiments/e4_repair.py --stage answer`, then `--stage judge` |
+| Summary tables and `paper_numbers.json` | `python experiments/analyze.py` |
+| Whole pipeline after E1/E2 | `experiments/run_light.ps1`, `experiments/run_rest.ps1` |
 | Paper figures | `python paper/make_figures.py` (illustrative) and `python paper/make_result_figures.py` (measured) |
 | Paper (.docx) | `python paper/build_paper.py` then `python paper/verify_output.py` |
 

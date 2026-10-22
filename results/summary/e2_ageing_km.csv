@@ -1,0 +1,7 @@
+mode,kind,age,survival
+ageing,changing,0.0,1.0
+ageing,changing,40.0,0.55
+ageing,changing,80.0,0.35000000000000003
+ageing,preference,0.0,1.0
+ageing,tool,0.0,1.0
+ageing,tool,80.0,0.75

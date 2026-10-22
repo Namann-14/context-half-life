@@ -31,6 +31,11 @@ def fetch_longmemeval():
 
 
 def fetch_gutenberg():
+    try:  # use the operating system's certificate store (corporate/AV proxies re-sign TLS)
+        import truststore
+        truststore.inject_into_ssl()
+    except ImportError:
+        pass
     d = DATA / "gutenberg"
     d.mkdir(parents=True, exist_ok=True)
     for name, url in GUTENBERG.items():

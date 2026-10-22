@@ -8,8 +8,8 @@ import re
 import numpy as np
 
 _EAV_PATTERNS = [
-    re.compile(r"my (?P<attr>[a-z ]+?) is (?:now )?(?P<val>[^,.]+)", re.I),
-    re.compile(r"your (?P<attr>[a-z ]+?) is (?P<val>[^,.]+)", re.I),
+    re.compile(r"my (?P<attr>[a-z ]+?) is (?:now )?(?P<val>(?:Dr\. )?[^,.]+)", re.I),
+    re.compile(r"your (?P<attr>[a-z ]+?) is (?P<val>(?:Dr\. )?[^,.]+)", re.I),
     re.compile(r"I (?:currently )?live in (?P<val>[^,.]+)", re.I),
 ]
 

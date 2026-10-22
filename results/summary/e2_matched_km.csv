@@ -1,0 +1,11 @@
+mode,kind,age,survival
+matched,changing,0.0,1.0
+matched,changing,10.0,0.9
+matched,changing,40.0,0.7000000000000001
+matched,changing,80.0,0.4
+matched,preference,0.0,1.0
+matched,preference,10.0,0.9
+matched,preference,20.0,0.7000000000000001
+matched,tool,0.0,1.0
+matched,tool,10.0,0.9
+matched,tool,80.0,0.7000000000000001

@@ -15,7 +15,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="llama3.2:3b")
     ap.add_argument("--mode", choices=["ageing", "matched"], default="ageing")
-    ap.add_argument("--facts", type=int, default=30)
+    ap.add_argument("--facts", type=int, default=20)
     ap.add_argument("--ages", type=int, nargs="+", default=AGES)
     ap.add_argument("--limit", type=int, default=0)
     a = ap.parse_args()

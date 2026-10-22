@@ -14,7 +14,7 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--model", default="llama3.2:3b")
     ap.add_argument("--lengths", type=int, nargs="+", default=[1024, 2048, 4096, 8192, 16384])
-    ap.add_argument("--needles", type=int, default=5)
+    ap.add_argument("--needles", type=int, default=3)
     ap.add_argument("--limit", type=int, default=0, help="stop after N new calls (smoke test)")
     a = ap.parse_args()
     niah.check_needles()

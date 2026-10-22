@@ -1,0 +1,5 @@
+mode,precision,recall,n_true,n_pred
+stale,1.0,1.0,96,96
+contradictory,1.0,1.0,32,32
+redundant,0.8229166666666666,1.0,64,83
+irrelevant,0.37620964105339105,1.0,93,237

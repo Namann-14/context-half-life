@@ -1,0 +1,7 @@
+{
+  "dup": 0.95,
+  "rel": 0.05,
+  "tuned_on": "dev",
+  "n_dev": 8,
+  "dev_mean_f1": 0.725
+}

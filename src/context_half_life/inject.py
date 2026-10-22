@@ -18,18 +18,36 @@ ATTRIBUTES = {
     "room": ["B-204", "C-117", "A-310", "D-025", "E-442", "F-208"],
     "mentor": ["Dr. Rao", "Dr. Iyer", "Dr. Bose", "Dr. Kulkarni", "Dr. Menon", "Dr. Sethi"],
 }
-NEUTRAL = [
-    "Could you explain how binary search trees stay balanced?",
-    "Sure. Self-balancing trees such as AVL trees rotate nodes after inserts to keep heights small.",
-    "What is a good way to revise graph algorithms before a test?",
-    "Practise on small graphs by hand first, then code breadth-first and depth-first search from scratch.",
-    "Please remind me what amortised analysis means.",
-    "It averages the cost of a sequence of operations, so an occasional expensive step is spread out.",
-    "How do I write a clear abstract for a lab report?",
-    "State the question, the method, the main result and the one-line conclusion, in that order.",
-    "What is the difference between a process and a thread?",
-    "A process owns its own memory space, while threads inside one process share it.",
+TOPICS = [
+    "binary search trees", "hash tables", "graph traversal", "dynamic programming", "sorting stability",
+    "process scheduling", "virtual memory", "TCP congestion control", "relational joins", "database indexing",
+    "recursion", "linked lists", "heaps", "tries", "union-find", "shortest paths", "minimum spanning trees",
+    "regular expressions", "finite automata", "compilers", "garbage collection", "cache coherence",
+    "deadlocks", "semaphores", "public-key encryption", "hash functions", "normalisation", "transactions",
+    "REST design", "unit testing", "version control", "linear regression", "gradient descent", "overfitting",
+    "decision trees", "k-means clustering", "Bayes rule", "matrix rank", "eigenvalues", "Fourier transforms",
+    "Boolean algebra", "logic gates", "pipelining", "interrupt handling", "paging", "DNS lookup",
+    "load balancing", "message queues", "big-O notation", "amortised analysis", "bit manipulation",
+    "floating-point error", "string matching", "topological sorting", "bloom filters", "skip lists",
+    "B-trees", "red-black trees", "memoisation", "greedy algorithms",
 ]
+USER_T = ["Can you explain {t} to me?", "What should I revise first about {t}?",
+          "I keep mixing up the details of {t}. Help?", "Give me a quick summary of {t}, please."]
+ASST_T = ["Sure. With {t}, start from the definition, then trace one tiny example by hand.",
+          "A good order for {t} is: core idea, standard operations, then typical pitfalls.",
+          "The usual trap with {t} is skipping edge cases, so test an empty input first.",
+          "In short, {t} trades extra bookkeeping for speed; practise on small cases."]
+
+
+def neutral_pair(k):
+    t = TOPICS[k % len(TOPICS)]
+    return USER_T[(k // len(TOPICS) + k) % 4].format(t=t), ASST_T[(k // len(TOPICS) + 2 * k + 1) % 4].format(t=t)
+
+
+def neutral_text(k):
+    return neutral_pair(k // 2)[k % 2]
+
+
 IRRELEVANT_LOG = ("[build log] compiling module {m} ... warning: unused variable x{n} ... "
                   "linking ... done in {s}.{n}s ... cache miss ratio {n}% ... retrying flaky step {m}")
 
@@ -69,7 +87,7 @@ def generate_session(seed, n_turns=40, n_attrs=3, n_redundant=2, n_irrelevant=3,
             else:
                 text = f"Correction: my {attr} is now {val}, the earlier value no longer applies."
                 segs.append(_seg(nid(), t, "user", text, "preference", (entity, attr, val), None, True))
-        u, a = NEUTRAL[(2 * t) % len(NEUTRAL)], NEUTRAL[(2 * t + 1) % len(NEUTRAL)]
+        u, a = neutral_pair(t)
         segs.append(_seg(nid(), t, "user", u, "chat"))
         segs.append(_seg(nid(), t, "assistant", a, "chat"))
         if t in rng.sample(range(5, n_turns + 1), n_irrelevant):
@@ -101,16 +119,20 @@ def generate_session(seed, n_turns=40, n_attrs=3, n_redundant=2, n_irrelevant=3,
 
 
 def twin(session):
-    """Same turn structure and similar token counts, with injected segments replaced by neutral filler."""
+    """Same turn structure and similar token counts, but no rot.
+
+    Every injected segment (old state, redundant copy, contradiction, irrelevant log) is replaced by
+    neutral filler; the user's *current* value statements are kept so probes stay answerable.
+    """
     segs = []
     for s in session["segments"]:
-        if s["label"] in ("irrelevant", "redundant", "contradictory") or s["eav"] is not None:
-            text = NEUTRAL[(3 * s["birth"] + len(segs)) % len(NEUTRAL)]
+        if s["label"] is not None:
+            text = neutral_text(200 + 2 * s["birth"] + len(segs))
             segs.append(dict(s, text=text, tokens=tokens.count(text), eav=None, label=None, protected=False,
                              type="chat"))
         else:
             segs.append(dict(s))
-    return dict(session, segments=segs, probes=[])
+    return dict(session, segments=segs)
 
 
 def to_messages(segments):

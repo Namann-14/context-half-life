@@ -27,6 +27,16 @@ def prompt_hash(messages) -> str:
     return hashlib.sha256(json.dumps(messages, sort_keys=True).encode()).hexdigest()[:16]
 
 
+def _gpu_temp():
+    import subprocess
+    try:
+        out = subprocess.run(["nvidia-smi", "--query-gpu=temperature.gpu", "--format=csv,noheader,nounits"],
+                             capture_output=True, text=True, timeout=10).stdout.split()[0]
+        return int(out)
+    except Exception:  # noqa: BLE001
+        return 0
+
+
 class OllamaChat:
     """Chat against a local Ollama server (temperature 0, fixed seed, explicit context size)."""
 
@@ -43,7 +53,17 @@ class OllamaChat:
                 return m.get("digest", "")
         return ""
 
+    def _throttle(self):
+        """Be gentle with the GPU: short pause after every call, longer pause when it runs hot."""
+        self._calls = getattr(self, "_calls", 0) + 1
+        time.sleep(float(os.environ.get("CHR_COOLDOWN_S", "0.15")))
+        if self._calls % 25 == 0:
+            limit = int(os.environ.get("CHR_MAX_GPU_TEMP", "78"))
+            while _gpu_temp() > limit:
+                time.sleep(15)
+
     def chat(self, messages, num_predict=None, seed=None) -> Reply:
+        self._throttle()
         t0 = time.perf_counter()
         r = self.client.chat(
             model=self.model, messages=messages, keep_alive="30m",

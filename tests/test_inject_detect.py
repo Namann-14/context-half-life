@@ -25,7 +25,9 @@ def test_generator_is_deterministic_and_labelled():
 
 def test_twin_has_no_labels():
     t = inject.twin(inject.generate_session(5))
-    assert all(s["label"] is None and s["eav"] is None for s in t["segments"])
+    assert all(s["label"] is None for s in t["segments"])
+    cur = [s for s in t["segments"] if s["eav"]]
+    assert len(cur) == 3 and all(s["role"] == "user" for s in cur)  # only current values remain
 
 
 def test_stale_detector_finds_all_stale():
