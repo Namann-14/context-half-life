@@ -1,6 +1,6 @@
 # context-half-life
 
-Code, experiments and paper source for **"The Half-Life of Context: Measuring and Repairing Context Rot in
+Code, experiments and results for **"The Half-Life of Context: Measuring and Repairing Context Rot in
 Large Language Models"** (Nayak, Singh, Singh, Garg; Chitkara University).
 
 Long LLM conversations accumulate stale, contradictory, redundant and irrelevant text ("context rot").
@@ -14,7 +14,7 @@ This repository implements
   protection set and verification with rollback, plus the baselines (full context, sliding window,
   rolling summary, random and oldest-first repair);
 - a **rot-injection generator** that produces *synthetic* sessions with known ground truth;
-- the evaluation harness (E1-E5) and the build scripts of the paper.
+- the evaluation harness (E1-E5).
 
 Repair works at the context layer only: no model is retrained.
 
@@ -33,7 +33,7 @@ src/context_half_life/   library (probe, halflife, rot, detectors, repair, injec
 experiments/             one resumable script per experiment, fetch_data.py, shared helpers
 results/                 raw/*.jsonl (per-call logs), summary/*.csv, env/ (versions, model digests)
 tests/                   pytest suite (no LLM needed)
-paper/                   paper text, figure scripts, DOCX builder and checks (template/ = text-free IEEE template)
+paper/                   the final paper (.docx and .pdf)
 data/                    downloaded datasets (git-ignored)
 ```
 
@@ -43,7 +43,7 @@ Requires Python 3.10+ (developed on 3.14) and [uv](https://docs.astral.sh/uv/).
 
 ```bash
 uv venv .venv
-uv pip install --python .venv/Scripts/python.exe -e ".[dev,paper]"
+uv pip install --python .venv/Scripts/python.exe -e ".[dev]"
 ```
 
 On Linux/macOS use `.venv/bin/python`. Experiments use local models through
@@ -76,16 +76,6 @@ resumed. Seeds are fixed (`context_half_life.SEED`); decoding uses temperature 0
 | E4 repair comparison and E5 ablations (LongMemEval subset) | `python experiments/e4_repair.py --stage answer`, then `--stage judge` |
 | Summary tables and `paper_numbers.json` | `python experiments/analyze.py` |
 | Whole pipeline after E1/E2 | `experiments/run_light.ps1`, `experiments/run_rest.ps1` |
-| Paper figures | `python paper/make_figures.py` (illustrative) and `python paper/make_result_figures.py` (measured) |
-| Paper (.docx) | `python paper/make_result_figures.py`, `python paper/build_paper.py`, then `python paper/verify_output.py` |
-| Paper PDF (Word, Windows) | `python paper/render_pdf.py` |
-
-## The paper build
-
-`paper/build_paper.py` builds the IEEE two-column document on top of `paper/template/ieee_template.docx`, a
-copy of the conference template with all text, images and metadata removed (only layout, styles and
-numbering remain). Code listings in the paper are extracted from the marked regions
-(`# [listing:NAME]` ... `# [/listing]`) of the modules in `src/`, so the paper shows the code that ran.
 
 ## Data and licences
 

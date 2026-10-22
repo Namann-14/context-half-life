@@ -34,3 +34,10 @@ paper/_render/
 
 # run logs
 *.log
+
+# paper-building tooling (kept locally, not published)
+paper/*.py
+paper/template/
+paper/figures/
+paper/numbers_used.json
+tests/test_listings.py
