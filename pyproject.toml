@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "context-half-life"
+version = "0.1.0"
+description = "Measure and repair context rot in LLM conversations with a survival-analysis Context Half-Life."
+readme = "README.md"
+requires-python = ">=3.10"
+license = { text = "MIT" }
+dependencies = [
+  "numpy", "scipy", "pandas", "scikit-learn", "lifelines", "matplotlib",
+  "ollama", "huggingface_hub", "sentence-transformers", "tiktoken", "pyyaml",
+]
+
+[project.optional-dependencies]
+paper = ["python-docx", "pymupdf", "pywin32; sys_platform == 'win32'"]
+dev = ["pytest"]
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src", "paper"]

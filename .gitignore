@@ -1,0 +1,33 @@
+# environments and caches
+.venv/
+venv/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ruff_cache/
+.mypy_cache/
+*.egg-info/
+.cache/
+
+# secrets
+.env
+.env.*
+!.env.example
+*.key
+
+# large or third-party data (fetch with experiments/fetch_data.py)
+data/*
+!data/README.md
+*.gguf
+*.safetensors
+
+# originals that are not ours to publish (restored template, source paper)
+paper/originals/
+
+# Word lock/temp files and local renders
+~$*.docx
+*.tmp
+paper/_render/
+
+# claude code local state
+.claude/

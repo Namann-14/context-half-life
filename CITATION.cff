@@ -1,0 +1,41 @@
+cff-version: 1.2.0
+message: "If you use this software or the accompanying paper, please cite it as below."
+title: "context-half-life: measuring and repairing context rot in large language models"
+type: software
+license: MIT
+repository-code: "https://github.com/Namann-14/context-half-life"
+authors:
+  - family-names: Nayak
+    given-names: Naman
+    affiliation: "Chitkara University Institute of Engineering and Technology, Chitkara University, Punjab, India"
+    email: naman0746.be23@chitkara.edu.in
+  - family-names: Singh
+    given-names: Manveer
+    affiliation: "Chitkara University Institute of Engineering and Technology, Chitkara University, Punjab, India"
+    email: manveer2063.be23@chitkara.edu.in
+  - family-names: Singh
+    given-names: Jaiveer
+    affiliation: "Chitkara University Institute of Engineering and Technology, Chitkara University, Punjab, India"
+    email: jaiveer2104.be23@chitkara.edu.in
+  - family-names: Garg
+    given-names: Sujal
+    affiliation: "Chitkara University Institute of Engineering and Technology, Chitkara University, Punjab, India"
+    email: sujal2143.be23@chitkara.edu.in
+preferred-citation:
+  type: article
+  title: "The Half-Life of Context: Measuring and Repairing Context Rot in Large Language Models"
+  authors:
+    - family-names: Nayak
+      given-names: Naman
+    - family-names: Singh
+      given-names: Manveer
+    - family-names: Singh
+      given-names: Jaiveer
+    - family-names: Garg
+      given-names: Sujal
+  year: 2026
+keywords:
+  - context rot
+  - context half-life
+  - long-context reasoning
+  - survival analysis
