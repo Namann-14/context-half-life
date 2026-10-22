@@ -11,6 +11,7 @@ Run from the repository root:  python paper/build_paper.py
 """
 import copy
 import datetime as dt
+import json
 import re
 import sys
 from pathlib import Path
@@ -152,10 +153,38 @@ class Refs:
         return ", ".join(parts)
 
 
+NUMS = {}   # results/paper_numbers.json, loaded by PaperBuilder
+USED = {}   # keys actually quoted in the paper, written to paper/numbers_used.json
+
+
+def fmt_num(key, fmt):
+    """Format a measured number from results/paper_numbers.json; a missing or null key is a build error."""
+    if key not in NUMS or NUMS[key] is None:
+        raise KeyError(f"paper quotes {key!r}, which is missing or null in results/paper_numbers.json")
+    v = NUMS[key]
+    USED[key] = v
+    if fmt == "pct0":
+        return f"{100 * v:.0f}"
+    if fmt == "pct1":
+        return f"{100 * v:.1f}"
+    if fmt in ("f0", "f1", "f2", "f3", "f4"):
+        return f"{v:.{fmt[1]}f}"
+    if fmt == "i":
+        return f"{int(round(v)):,}"
+    if fmt == "pv":
+        return "p < 0.001" if v < 0.001 else f"p = {v:.2f}" if v >= 0.01 else f"p = {v:.3f}"
+    if fmt == "sgn1":
+        return f"{100 * v:+.1f}".replace("-", "−")
+    if fmt == "sgnf2":
+        return f"{v:+.2f}".replace("-", "−")
+    raise ValueError(f"unknown number format {fmt!r}")
+
+
 def resolve(text, labels, refs, prose=True):
     if prose:
         text = " ".join(text.split())
     text = re.sub(r"\[#([\w:-]+)\]", lambda m: str(labels[m.group(1)]), text)
+    text = re.sub(r"\[\$([\w.\-]+)\|(\w+)\]", lambda m: fmt_num(m.group(1), m.group(2)), text)
     if refs is not None:
         text = re.sub(r"\[@([^\]]+)\]", lambda m: refs.cite(m.group(1)), text)
     return text
@@ -536,10 +565,12 @@ class PaperBuilder:
                 part._blob = xml.encode("utf-8")
 
     def build(self, out):
+        NUMS.update(json.loads((ROOT / "results" / "paper_numbers.json").read_text(encoding="utf8")))
         self.front_matter()
         self.body_blocks()
         self.properties()
         self.doc.save(out)
+        (HERE / "numbers_used.json").write_text(json.dumps(USED, indent=1, sort_keys=True), encoding="utf8")
         return out
 
 

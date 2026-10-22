@@ -77,7 +77,8 @@ resumed. Seeds are fixed (`context_half_life.SEED`); decoding uses temperature 0
 | Summary tables and `paper_numbers.json` | `python experiments/analyze.py` |
 | Whole pipeline after E1/E2 | `experiments/run_light.ps1`, `experiments/run_rest.ps1` |
 | Paper figures | `python paper/make_figures.py` (illustrative) and `python paper/make_result_figures.py` (measured) |
-| Paper (.docx) | `python paper/build_paper.py` then `python paper/verify_output.py` |
+| Paper (.docx) | `python paper/make_result_figures.py`, `python paper/build_paper.py`, then `python paper/verify_output.py` |
+| Paper PDF (Word, Windows) | `python paper/render_pdf.py` |
 
 ## The paper build
 

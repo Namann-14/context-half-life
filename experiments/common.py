@@ -49,7 +49,9 @@ def capture_env(models=()):
         except Exception as e:  # noqa: BLE001
             info[key] = f"unavailable: {e}"
     info["models"] = dict(models)
-    freeze = subprocess.run([sys.executable, "-m", "pip", "freeze"], capture_output=True, text=True).stdout
+    freeze = subprocess.run(["uv", "pip", "freeze", "--python", sys.executable], capture_output=True,
+                            text=True).stdout or subprocess.run([sys.executable, "-m", "pip", "freeze"],
+                                                                capture_output=True, text=True).stdout
     (ENV / "pip_freeze.txt").write_text(freeze, encoding="utf8")
     (ENV / "environment.json").write_text(json.dumps(info, indent=2), encoding="utf8")
     return info

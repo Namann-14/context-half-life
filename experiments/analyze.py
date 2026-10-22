@@ -166,6 +166,7 @@ def e3():
     th = json.loads((SUMMARY / "e3_thresholds.json").read_text())
     put("e3.dup", th["dup"])
     put("e3.rel", th["rel"])
+    put("e3.n_dev", th["n_dev"])
     rows = []
     for mode in ("stale", "contradictory", "redundant", "irrelevant"):
         for k in ("precision", "recall"):
@@ -299,6 +300,7 @@ def e4():
         put(f"e4.p50.{cond}", g.wall_s.quantile(.5))
         put(f"e4.p95.{cond}", g.wall_s.quantile(.95))
         put(f"e4.rolled_back.{cond}", float(g["rolled_back"].mean()))
+        put(f"e4.saving.{cond}", 1 - tok / df[df.condition == "B0"].prompt_tokens.mean())
     save(pd.DataFrame(rows), "e4_main.csv")
     # per-category accuracy (H3)
     cat_rows = []
@@ -342,6 +344,15 @@ def e4():
         put(f"e5.diff.{c}.hi", hi)
         put(f"e5.p.{c}", p)
     save(pd.DataFrame(ab_rows), "e5_ablation.csv")
+    # judge sanity check: agreement with normalised string matching on answerable questions
+    from context_half_life import data, scoring
+    qmap = {q["question_id"]: q for q in data.load_longmemeval("s")}
+    na = df[df.category != "abstention"]
+    sm = np.array([int(scoring.contains_answer(r.response, str(qmap[r.qid]["answer"]))) for r in na.itertuples()])
+    put("e4.judge_agree", float((sm == na.correct.values).mean()))
+    put("e4.judge_acc_answerable", float(na.correct.mean()))
+    put("e4.string_acc_answerable", float(sm.mean()))
+    put("e4.judge_n_answerable", len(na))
     # H7: latency break-even (HL reader time + repair overhead vs full-context reader time)
     t_b0 = df[df.condition == "B0"].set_index("qid").wall_s.reindex(qs)
     t_hl = df[df.condition == "HL"].set_index("qid").wall_s.reindex(qs)
@@ -359,6 +370,10 @@ def main():
     e2_mode("matched")
     e3()
     e4()
+    total = 0.0
+    for name in ("e1_niah", "e2_ageing", "e2_matched", "e3_reader", "e4_answers"):
+        total += sum(r["wall_s"] for r in read_jsonl(f"{name}_{MTAG}") if not r.get("cached"))
+    put("run.reader_min", total / 60)
     (SUMMARY.parent / "paper_numbers.json").write_text(json.dumps(NUMS, indent=1, sort_keys=True))
     print(f"wrote {len(NUMS)} numbers to results/paper_numbers.json")
 

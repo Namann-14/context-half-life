@@ -1,9 +1,10 @@
 {
   "python": "3.14.4 (tags/v3.14.4:23116f9, Apr  7 2026, 14:10:54) [MSC v.1944 64 bit (AMD64)]",
   "platform": "Windows-11-10.0.26300-SP0",
-  "ollama": "unavailable: [WinError 2] The system cannot find the file specified",
+  "ollama": "ollama version is 0.40.8",
   "gpu": "NVIDIA GeForce RTX 5050 Laptop GPU, 8151 MiB, 617.42",
   "models": {
-    "llama3.2:3b": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72"
+    "llama3.2:3b": "a80c4f17acd55265feec403c7aef86be0c25983ab279d83f3bcd3abbcb5b8b72",
+    "qwen2.5:3b": "357c53fb659c5076de1d65ccb0b397446227b71a42be9d1603d46168015c9e4b"
   }
 }
