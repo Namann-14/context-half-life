@@ -31,3 +31,6 @@ paper/_render/
 
 # claude code local state
 .claude/
+
+# run logs
+*.log
